@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f3ee">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pamacs">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Pamacs</title>
+<style>
+:root{--bg:#f5f3ee;--card:#fffefa;--ink:#292b27;--muted:#85877f;--line:#e9e6dd;--green:#687c66;--green2:#e9efe5;--blue:#e8eff2;--peach:#f5e9df;--shadow:0 8px 26px rgba(45,48,39,.055)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;padding:22px 18px 28px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.eyebrow{font-size:10px;letter-spacing:2px;font-weight:800;color:var(--muted)}h1{font-size:30px;letter-spacing:-1px;margin:4px 0 0;font-weight:750}.date{font-size:12px;color:var(--muted);background:#eeece5;padding:9px 12px;border-radius:20px}
+.section-title{font-size:13px;font-weight:750;margin:22px 2px 11px;display:flex;justify-content:space-between;align-items:center}.sub{font-size:11px;color:var(--muted);font-weight:500}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.card{background:var(--card);border:1px solid rgba(220,217,207,.7);border-radius:20px;padding:16px;box-shadow:var(--shadow)}.metric{min-height:142px;position:relative;overflow:hidden}.metric .emoji{font-size:20px}.metric .num{font-size:36px;letter-spacing:-1.8px;font-weight:760;margin:12px 0 1px}.metric .label{font-size:12px;color:var(--muted)}.metric .last{font-size:11px;color:var(--green);margin-top:9px;font-weight:650}.metric button{position:absolute;right:13px;bottom:13px;border:0;background:var(--green2);color:#40543e;border-radius:13px;padding:10px 13px;font-weight:750;font-size:12px}
+.metric.water{background:#f9fcfc}.metric.appetite{background:#fcfaf5}
+.wide{margin-top:11px}.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.quick{display:flex;align-items:center;gap:12px;padding:15px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);text-align:left;width:100%;color:var(--ink)}.quick .ico{font-size:22px}.quick strong{display:block;font-size:13px}.quick small{color:var(--muted);font-size:11px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow)}.weightrow{display:flex;align-items:center;justify-content:space-between}.weightnum{font-size:27px;font-weight:750;letter-spacing:-1px}.weightnum small{font-size:13px;color:var(--muted);font-weight:550}.mini-btn{border:0;background:#f0eee7;border-radius:12px;padding:10px 12px;font-weight:700;color:var(--ink)}
+.tabs{display:flex;gap:7px;margin:22px 0 12px}.tab{flex:1;border:1px solid var(--line);background:transparent;border-radius:13px;padding:11px 5px;color:var(--muted);font-weight:700;font-size:12px}.tab.active{background:var(--ink);color:white;border-color:var(--ink)}
+.entry{display:flex;gap:11px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.entry:last-child{border-bottom:0}.entryico{width:37px;height:37px;border-radius:13px;background:#f2f0e9;display:grid;place-items:center;font-size:17px;flex-shrink:0}.entrymain{flex:1;min-width:0}.entrymain strong{font-size:13px}.entrymain small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.entryval{font-size:13px;font-weight:750}.entryactions{display:flex;gap:5px;margin-left:4px}.entryactions button{border:0;background:#f2f0e9;border-radius:9px;padding:7px;font-size:11px;color:#555}
+.empty{text-align:center;padding:25px 10px;color:var(--muted);font-size:12px;line-height:1.6}.foot{text-align:center;color:#a2a197;font-size:10px;margin:22px 0 5px}
+.modal{position:fixed;inset:0;background:rgba(30,32,28,.35);display:none;align-items:flex-end;justify-content:center;padding:12px;z-index:10}.modal.show{display:flex}.sheet{width:min(100%,560px);background:var(--card);border-radius:24px 24px 18px 18px;padding:21px 18px calc(20px + env(safe-area-inset-bottom));box-shadow:0 10px 50px #0002}.sheet h2{font-size:20px;margin:0 0 5px}.sheet p{font-size:12px;color:var(--muted);margin:0 0 18px}.field{margin:13px 0}.field label{display:block;font-size:11px;font-weight:750;color:#686b62;margin-bottom:7px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:13px;padding:13px;background:#fbfaf6;color:var(--ink);font:inherit;font-size:15px;outline:none}.field textarea{min-height:65px;resize:vertical}.actions{display:flex;gap:9px;margin-top:18px}.actions button{flex:1;border:0;border-radius:14px;padding:14px;font-weight:750;font-size:13px}.cancel{background:#f0eee7;color:var(--ink)}.save{background:var(--green);color:white}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar button{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;font-size:11px;font-weight:700;color:var(--ink)}
+.toast{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#30342d;color:white;padding:11px 16px;border-radius:30px;font-size:12px;opacity:0;pointer-events:none;transition:.2s;z-index:20;white-space:nowrap}.toast.show{opacity:1}
+@media(min-width:520px){.wrap{padding-top:32px}.metric{min-height:155px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="top"><div><div class="eyebrow">PAMACS · NAPLÓ</div><h1>Szia, Pamacs! <span style="font-size:22px">🐾</span></h1></div><div class="date" id="today"></div></header>
+ <div class="section-title">Mai áttekintés <span class="sub" id="todayLabel"></span></div>
+ <div class="grid">
+  <div class="card metric"><div class="emoji">💧</div><div class="num" id="peeCount">0</div><div class="label">pisi ma</div><div class="last" id="peeLast">Még nincs rögzítve</div><button onclick="quick('pee')">＋ Pisi</button></div>
+  <div class="card metric"><div class="emoji">💩</div><div class="num" id="poopCount">0</div><div class="label">kaki ma</div><div class="last" id="poopLast">Még nincs rögzítve</div><button onclick="quick('poop')">＋ Kaki</button></div>
+  <div class="card metric water"><div class="emoji">🥣</div><div class="num" id="waterTotal">0<span style="font-size:15px"> ml</span></div><div class="label">vízfogyasztás ma</div><div class="last">Mai összes mennyiség</div><button onclick="openModal('water')">＋ Víz</button></div>
+  <div class="card metric appetite"><div class="emoji">🍽️</div><div class="num" id="appetiteToday" style="font-size:22px;margin-top:20px">Nincs adat</div><div class="label">étvágy ma</div><div class="last">Legutóbbi értékelés</div><button onclick="openModal('appetite')">＋ Étvágy</button></div>
+ </div>
+ <div class="section-title">Testsúly <span class="sub">Legutóbbi mérés</span></div>
+ <div class="panel weightrow"><div><div class="weightnum" id="weightValue">— <small>kg</small></div><div class="sub" id="weightDate">Még nincs rögzítve</div></div><button class="mini-btn" onclick="openModal('weight')">＋ Mérés</button></div>
+ <div class="tabs"><button class="tab active" data-tab="today" onclick="setTab('today')">Mai nap</button><button class="tab" data-tab="all" onclick="setTab('all')">Előzmények</button><button class="tab" data-tab="tools" onclick="setTab('tools')">Adatok</button></div>
+ <section id="todayView"><div class="section-title" style="margin-top:8px">Mai események <span class="sub" id="eventCount">0 esemény</span></div><div class="panel" id="todayEvents"></div></section>
+ <section id="allView" style="display:none"><div class="section-title" style="margin-top:8px">Legutóbbi események <span class="sub">Időrendi sorrend</span></div><div class="panel" id="allEvents"></div></section>
+ <section id="toolsView" style="display:none"><div class="section-title" style="margin-top:8px">Adatkezelés</div><div class="panel"><p style="font-size:12px;line-height:1.6;color:var(--muted);margin-top:0">Az adatok jelenleg ezen az eszközön, ebben a böngészőben tárolódnak. Rendszeresen készíts biztonsági mentést.</p><div class="toolbar"><button onclick="exportData()">⬇ Mentés exportálása</button><button onclick="document.getElementById('importFile').click()">⬆ Mentés visszatöltése</button><button onclick="confirmClear()">Adatok törlése</button><input id="importFile" type="file" accept="application/json" hidden onchange="importData(event)"></div></div><div class="section-title">Következő fejlesztés</div><div class="panel" style="font-size:12px;color:var(--muted);line-height:1.6">Felhőszinkron és több eszközös hozzáférés még nincs bekapcsolva. Ehhez később biztonságos tárhelyet kapcsolunk az alkalmazáshoz.</div></section>
+ <div class="foot">Pamacs · szeretettel vezetett napló</div>
+</div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="sheet"><h2 id="modalTitle">Rögzítés</h2><p id="modalDesc">Add meg az adatokat.</p><div id="modalFields"></div><div class="actions"><button class="cancel" onclick="closeModal()">Mégse</button><button class="save" onclick="saveModal()">Mentés</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='pamacs_app_v1';
+let events=load(), currentType=null, editingId=null, activeTab='today';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(events));render()}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function todayKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function fmtTime(v){return new Date(v).toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'})}
+function fmtDate(v){return new Date(v).toLocaleDateString('hu-HU',{year:'numeric',month:'short',day:'numeric'})}
+function typeInfo(t){return {pee:['💧','Pisi'],poop:['💩','Kaki'],water:['🥣','Víz'],appetite:['🍽️','Étvágy'],weight:['⚖️','Testsúly']}[t]}
+function quick(t){const e={id:id(),type:t,at:new Date().toISOString()};events.push(e);persist();toast(t==='pee'?'Pisi rögzítve 💧':'Kaki rögzítve 💩')}
+function openModal(type,record=null){currentType=type;editingId=record?.id||null;const titles={water:'Vízfogyasztás',appetite:'Étvágy rögzítése',weight:'Testsúly rögzítése',pee:'Pisi szerkesztése',poop:'Kaki szerkesztése'};document.getElementById('modalTitle').textContent=titles[type]||'Esemény szerkesztése';document.getElementById('modalDesc').textContent=record?'Módosítsd a rögzített adatot.':'Rögzítsd Pamacs mai adatát.';
+let fields='';const val=record||{};
+if(type==='water')fields=`<div class="field"><label>Mennyiség (ml)</label><input id="fAmount" type="number" min="1" max="2000" step="1" placeholder="pl. 25" inputmode="decimal" value="${val.amount??''}"></div>`;
+if(type==='appetite')fields=`<div class="field"><label>Étvágy</label><select id="fValue"><option value="Normál">Normál</option><option value="Kevesebb">Kevesebb a szokásosnál</option><option value="Több">Több a szokásosnál</option><option value="Nem evett">Nem evett</option></select></div><div class="field"><label>Megjegyzés (opcionális)</label><textarea id="fNote" placeholder="Pl. reggel nem kérte a nedves tápot"></textarea></div>`;
+if(type==='weight')fields=`<div class="field"><label>Testsúly (kg)</label><input id="fAmount" type="number" min="0.1" max="30" step="0.01" placeholder="pl. 3.60" inputmode="decimal" value="${val.amount??''}"></div>`;
+if(type==='pee'||type==='poop')fields=`<div class="field"><label>Időpont</label><input id="fAt" type="datetime-local" value="${toLocalInput(val.at||new Date().toISOString())}"></div><div class="field"><label>Megjegyzés (opcionális)</label><textarea id="fNote" placeholder="Megfigyelés...">${val.note||''}</textarea></div>`;
+document.getElementById('modalFields').innerHTML=fields;
+if(record&&type==='appetite'){document.getElementById('fValue').value=val.value||'Normál';document.getElementById('fNote').value=val.note||''}
+document.getElementById('modal').classList.add('show')}
+function toLocalInput(iso){const d=new Date(iso);return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function saveModal(){let item=editingId?events.find(x=>x.id===editingId):{id:id(),type:currentType,at:new Date().toISOString()};if(!item)return;
+if(currentType==='water'||currentType==='weight'){const n=Number(document.getElementById('fAmount').value);if(!n||n<=0){toast('Adj meg érvényes mennyiséget');return}item.amount=n}
+if(currentType==='appetite'){item.value=document.getElementById('fValue').value;item.note=document.getElementById('fNote').value.trim()}
+if(currentType==='pee'||currentType==='poop'){const d=document.getElementById('fAt').value;if(!d){toast('Add meg az időpontot');return}item.at=new Date(d).toISOString();item.note=document.getElementById('fNote').value.trim()}
+if(!editingId)events.push(item);persist();closeModal();toast('Mentve ✓')}
+function setTab(tab){activeTab=tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['today','all','tools'].forEach(x=>document.getElementById(x+'View').style.display=x===tab?'block':'none')}
+function timeSince(iso){if(!iso)return 'Még nincs rögzítve';let m=Math.max(0,Math.floor((Date.now()-new Date(iso).getTime())/60000));if(m<60)return `${m} perce`;let h=Math.floor(m/60),r=m%60;return r?`${h} óra ${r} perce`:`${h} órája`}
+function render(){const today=todayKey();const todays=events.filter(e=>todayKey(new Date(e.at))===today);const pee=todays.filter(e=>e.type==='pee').sort((a,b)=>new Date(b.at)-new Date(a.at));const poop=todays.filter(e=>e.type==='poop').sort((a,b)=>new Date(b.at)-new Date(a.at));document.getElementById('peeCount').textContent=pee.length;document.getElementById('poopCount').textContent=poop.length;document.getElementById('peeLast').textContent=pee[0]?'Utolsó: '+fmtTime(pee[0].at)+' · '+timeSince(pee[0].at):'Még nincs rögzítve';document.getElementById('poopLast').textContent=poop[0]?'Utolsó: '+fmtTime(poop[0].at)+' · '+timeSince(poop[0].at):'Még nincs rögzítve';
+const water=todays.filter(e=>e.type==='water').reduce((s,e)=>s+(Number(e.amount)||0),0);document.getElementById('waterTotal').innerHTML=water+'<span style="font-size:15px"> ml</span>';
+const appet=todays.filter(e=>e.type==='appetite').sort((a,b)=>new Date(b.at)-new Date(a.at))[0];document.getElementById('appetiteToday').textContent=appet?appet.value:'Nincs adat';
+const weights=events.filter(e=>e.type==='weight').sort((a,b)=>new Date(b.at)-new Date(a.at));document.getElementById('weightValue').innerHTML=weights[0]?Number(weights[0].amount).toFixed(2).replace('.',',')+' <small>kg</small>':'— <small>kg</small>';document.getElementById('weightDate').textContent=weights[0]?fmtDate(weights[0].at):'Még nincs rögzítve';
+document.getElementById('eventCount').textContent=todays.length+' esemény';document.getElementById('todayEvents').innerHTML=renderList(todays.sort((a,b)=>new Date(b.at)-new Date(a.at)));
+document.getElementById('allEvents').innerHTML=renderList([...events].sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,100));
+document.getElementById('today').textContent=new Date().toLocaleDateString('hu-HU',{month:'short',day:'numeric'});document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('hu-HU',{weekday:'long'})}
+function renderList(list){if(!list.length)return '<div class="empty">Még nincs rögzített esemény.<br>Az első bejegyzésed itt fog megjelenni.</div>';return list.map(e=>{const [ico,name]=typeInfo(e.type);let value=e.type==='water'?e.amount+' ml':e.type==='weight'?Number(e.amount).toFixed(2)+' kg':e.type==='appetite'?e.value:'';return `<div class="entry"><div class="entryico">${ico}</div><div class="entrymain"><strong>${name}${value?' · '+escapeHtml(value):''}</strong><small>${fmtDate(e.at)} · ${fmtTime(e.at)}${e.note?' · '+escapeHtml(e.note):''}</small></div><div class="entryactions"><button onclick="editEvent('${e.id}')">✎</button><button onclick="deleteEvent('${e.id}')">×</button></div></div>`}).join('')}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function editEvent(id){const e=events.find(x=>x.id===id);if(e)openModal(e.type,e)}
+function deleteEvent(id){if(confirm('Biztosan törlöd ezt a bejegyzést?')){events=events.filter(e=>e.id!==id);persist();toast('Bejegyzés törölve')}}
+function exportData(){const blob=new Blob([JSON.stringify({app:'Pamacs',version:1,exportedAt:new Date().toISOString(),events},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pamacs-mentes-'+todayKey()+'.json';a.click();URL.revokeObjectURL(a.href);toast('Mentés letöltése elindult')}
+function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!Array.isArray(data.events))throw Error();if(confirm('A jelenlegi napló lecserélődik a mentés tartalmára. Folytatod?')){events=data.events;persist();toast('Mentés visszatöltve')}}catch(e){toast('Nem sikerült beolvasni a mentést')}ev.target.value=''};r.readAsText(f)}
+function confirmClear(){if(confirm('Biztosan törlöd az összes Pamacs-bejegyzést? Előtte készíts mentést!')){events=[];persist();toast('Napló kiürítve')}}
+let toastTimer;function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1900)}
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>
