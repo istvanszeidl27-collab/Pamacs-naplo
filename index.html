@@ -16,6 +16,7 @@
 .wrap{max-width:560px;margin:0 auto;padding:22px 18px 28px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.eyebrow{font-size:10px;letter-spacing:2px;font-weight:800;color:var(--muted)}h1{font-size:30px;letter-spacing:-1px;margin:4px 0 0;font-weight:750}.date{font-size:12px;color:var(--muted);background:#eeece5;padding:9px 12px;border-radius:20px}
 .section-title{font-size:13px;font-weight:750;margin:22px 2px 11px;display:flex;justify-content:space-between;align-items:center}.sub{font-size:11px;color:var(--muted);font-weight:500}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.card{background:var(--card);border:1px solid rgba(220,217,207,.7);border-radius:20px;padding:16px;box-shadow:var(--shadow)}.metric{min-height:142px;position:relative;overflow:hidden}.metric .emoji{font-size:20px}.metric .num{font-size:36px;letter-spacing:-1.8px;font-weight:760;margin:12px 0 1px}.metric .label{font-size:12px;color:var(--muted)}.metric .last{font-size:11px;color:var(--green);margin-top:9px;font-weight:650}.metric button{position:absolute;right:13px;bottom:13px;border:0;background:var(--green2);color:#40543e;border-radius:13px;padding:10px 13px;font-weight:750;font-size:12px}
+.metric .lastdate{font-size:11px;color:var(--muted);margin-top:2px;font-weight:550}.metric.recent{padding-bottom:58px}
 .metric.water{background:#f9fcfc}.metric.appetite{background:#fcfaf5}
 .wide{margin-top:11px}.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.quick{display:flex;align-items:center;gap:12px;padding:15px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);text-align:left;width:100%;color:var(--ink)}.quick .ico{font-size:22px}.quick strong{display:block;font-size:13px}.quick small{color:var(--muted);font-size:11px}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow)}.weightrow{display:flex;align-items:center;justify-content:space-between}.weightnum{font-size:27px;font-weight:750;letter-spacing:-1px}.weightnum small{font-size:13px;color:var(--muted);font-weight:550}.mini-btn{border:0;background:#f0eee7;border-radius:12px;padding:10px 12px;font-weight:700;color:var(--ink)}
@@ -30,35 +31,49 @@
 </head>
 <body>
 <div class="wrap">
- <header class="top"><div><div class="eyebrow">PAMACS · NAPLÓ</div><h1>Szia, Pamacs! <span style="font-size:22px">🐾</span></h1></div><div class="date" id="today"></div></header>
- <div class="section-title">Mai áttekintés <span class="sub" id="todayLabel"></span></div>
- <div class="grid">
-  <div class="card metric"><div class="emoji">💧</div><div class="num" id="peeCount">0</div><div class="label">pisi ma</div><div class="last" id="peeLast">Még nincs rögzítve</div><button onclick="quick('pee')">＋ Pisi</button></div>
-  <div class="card metric"><div class="emoji">💩</div><div class="num" id="poopCount">0</div><div class="label">kaki ma</div><div class="last" id="poopLast">Még nincs rögzítve</div><button onclick="quick('poop')">＋ Kaki</button></div>
-  <div class="card metric water"><div class="emoji">🥣</div><div class="num" id="waterTotal">0<span style="font-size:15px"> ml</span></div><div class="label">vízfogyasztás ma</div><div class="last">Mai összes mennyiség</div><button onclick="openModal('water')">＋ Víz</button></div>
-  <div class="card metric appetite"><div class="emoji">🍽️</div><div class="num" id="appetiteToday" style="font-size:22px;margin-top:20px">Nincs adat</div><div class="label">étvágy ma</div><div class="last">Legutóbbi értékelés</div><button onclick="openModal('appetite')">＋ Étvágy</button></div>
- </div>
- <div class="section-title">Testsúly <span class="sub">Legutóbbi mérés</span></div>
- <div class="panel weightrow"><div><div class="weightnum" id="weightValue">— <small>kg</small></div><div class="sub" id="weightDate">Még nincs rögzítve</div></div><button class="mini-btn" onclick="openModal('weight')">＋ Mérés</button></div>
- <div class="tabs"><button class="tab active" data-tab="today" onclick="setTab('today')">Mai nap</button><button class="tab" data-tab="all" onclick="setTab('all')">Előzmények</button><button class="tab" data-tab="tools" onclick="setTab('tools')">Adatok</button></div>
- <section id="todayView"><div class="section-title" style="margin-top:8px">Mai események <span class="sub" id="eventCount">0 esemény</span></div><div class="panel" id="todayEvents"></div></section>
- <section id="allView" style="display:none"><div class="section-title" style="margin-top:8px">Legutóbbi események <span class="sub">Időrendi sorrend</span></div><div class="panel" id="allEvents"></div></section>
- <section id="toolsView" style="display:none"><div class="section-title" style="margin-top:8px">Adatkezelés</div><div class="panel"><p style="font-size:12px;line-height:1.6;color:var(--muted);margin-top:0">A bejegyzések ezen az eszközön is megmaradnak, és bejelentkezés után automatikusan szinkronizálódnak a felhővel. Másik eszközön ugyanazzal a fiókkal belépve visszatölthetők.</p><div class="toolbar"><button onclick="exportData()">⬇ Mentés exportálása</button><button onclick="document.getElementById('importFile').click()">⬆ Mentés visszatöltése</button><button onclick="confirmClear()">Adatok törlése</button><input id="importFile" type="file" accept="application/json" hidden onchange="importData(event)"></div></div><div class="section-title" style="margin-top:16px">Felhőszinkron</div><div class="panel"><div class="authstatus" id="cloudStatus">Nincs bejelentkezve. A napló jelenleg ezen az eszközön tárolódik.</div><div class="authbox"><label for="authEmail" style="font-size:11px;font-weight:750">E-mail-cím</label><input id="authEmail" type="email" autocomplete="email" placeholder="pelda@email.com"><label for="authPassword" style="font-size:11px;font-weight:750">Jelszó</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Legalább 6 karakter"><button onclick="window.pamacsSignIn&&window.pamacsSignIn()">Bejelentkezés</button><button onclick="window.pamacsSignUp&&window.pamacsSignUp()">Fiók létrehozása</button><button onclick="window.pamacsSync&&window.pamacsSync()">Szinkronizálás</button><button onclick="window.pamacsSignOut&&window.pamacsSignOut()">Kijelentkezés</button></div></div></section>
- <div class="foot">Pamacs · szeretettel vezetett napló</div>
+<header class="top"><div><div class="eyebrow">PAMACS · NAPLÓ</div><h1>Szia, Pamacs! <span style="font-size:22px">🐾</span></h1></div><div class="date" id="today"></div></header>
+<div class="section-title">Mai áttekintés <span class="sub" id="todayLabel"></span></div>
+<div class="grid">
+<div class="card metric recent"><div class="emoji">💧</div><div class="num" id="peeCount">0</div><div class="label">pisi ma</div><div class="last" id="peeLast">Még nincs rögzítve</div><div class="lastdate" id="peeLastDate"></div><button onclick="quick('pee')">＋ Pisi</button></div>
+<div class="card metric recent"><div class="emoji">💩</div><div class="num" id="poopCount">0</div><div class="label">kaki ma</div><div class="last" id="poopLast">Még nincs rögzítve</div><div class="lastdate" id="poopLastDate"></div><button onclick="quick('poop')">＋ Kaki</button></div>
+<div class="card metric water"><div class="emoji">🥣</div><div class="num" id="waterTotal">0<span style="font-size:15px"> ml</span></div><div class="label">vízfogyasztás ma</div><div class="last">Mai összes mennyiség</div><button onclick="openModal('water')">＋ Víz</button></div>
+<div class="card metric appetite"><div class="emoji">🍽️</div><div class="num" id="appetiteToday" style="font-size:22px;margin-top:20px">Nincs adat</div><div class="label">étvágy ma</div><div class="last">Legutóbbi értékelés</div><button onclick="openModal('appetite')">＋ Étvágy</button></div>
+</div>
+<div class="section-title">Testsúly <span class="sub">Legutóbbi mérés</span></div>
+<div class="panel weightrow"><div><div class="weightnum" id="weightValue">— <small>kg</small></div><div class="sub" id="weightDate">Még nincs rögzítve</div></div><button class="mini-btn" onclick="openModal('weight')">＋ Mérés</button></div>
+<div class="tabs"><button class="tab active" data-tab="today" onclick="setTab('today')">Mai nap</button><button class="tab" data-tab="all" onclick="setTab('all')">Előzmények</button><button class="tab" data-tab="tools" onclick="setTab('tools')">Adatok</button></div>
+<section id="todayView"><div class="section-title" style="margin-top:8px">Mai események <span class="sub" id="eventCount">0 esemény</span></div><div class="panel" id="todayEvents"></div></section>
+<section id="allView" style="display:none"><div class="section-title" style="margin-top:8px">Legutóbbi események <span class="sub">Időrendi sorrend</span></div><div class="panel" id="allEvents"></div></section>
+<section id="toolsView" style="display:none"><div class="section-title" style="margin-top:8px">Adatkezelés</div><div class="panel"><p style="font-size:12px;line-height:1.6;color:var(--muted);margin-top:0">A bejegyzések ezen az eszközön is megmaradnak, és bejelentkezés után automatikusan szinkronizálódnak a közös felhős naplóval. A háztartás tagjai ugyanazt a naplót látják és szerkeszthetik.</p><div class="toolbar"><button onclick="exportData()">⬇ Mentés exportálása</button><button onclick="document.getElementById('importFile').click()">⬆ Mentés visszatöltése</button><button onclick="confirmClear()">Helyi adatok törlése</button><input id="importFile" type="file" accept="application/json" hidden onchange="importData(event)"></div></div><div class="section-title" style="margin-top:16px">Felhőszinkron</div><div class="panel"><div class="authstatus" id="cloudStatus">Nincs bejelentkezve. A napló jelenleg ezen az eszközön tárolódik.</div><div class="authbox"><label for="authEmail" style="font-size:11px;font-weight:750">E-mail-cím</label><input id="authEmail" type="email" autocomplete="email" placeholder="pelda@email.com"><label for="authPassword" style="font-size:11px;font-weight:750">Jelszó</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Legalább 6 karakter"><button onclick="window.pamacsSignIn&&window.pamacsSignIn()">Bejelentkezés</button><button onclick="window.pamacsSignUp&&window.pamacsSignUp()">Fiók létrehozása</button><button onclick="window.pamacsSync&&window.pamacsSync()">Szinkronizálás</button><button onclick="window.pamacsSignOut&&window.pamacsSignOut()">Kijelentkezés</button></div></div><div class="section-title" style="margin-top:16px">Közös háztartás</div><div class="panel"><div class="authstatus" id="householdInfo">Jelentkezz be a közös háztartás megtekintéséhez.</div><div id="inviteBox" style="display:none"><div class="authbox"><label for="inviteEmail" style="font-size:11px;font-weight:750">Páros meghívása e-mail-címmel</label><input id="inviteEmail" type="email" autocomplete="off" placeholder="paros@email.com"><button onclick="window.pamacsInvite&&window.pamacsInvite()">Meghívás</button></div><div id="inviteList" style="margin-top:8px"></div></div></div></section>
+<div class="foot">Pamacs · szeretettel vezetett napló</div>
 </div>
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="sheet"><h2 id="modalTitle">Rögzítés</h2><p id="modalDesc">Add meg az adatokat.</p><div id="modalFields"></div><div class="actions"><button class="cancel" onclick="closeModal()">Mégse</button><button class="save" onclick="saveModal()">Mentés</button></div></div></div>
 <div class="toast" id="toast"></div>
 <script>
-const KEY='pamacs_app_v1';
+const KEY='pamacs_app_v1',SYNC_KEY='pamacs_sync_v2',LEGACY_DELETED_KEY='pamacs_cloud_deleted_v1';
 let events=load(), currentType=null, editingId=null, activeTab='today';
-function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function load(){try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
 function persist(){localStorage.setItem(KEY,JSON.stringify(events));render();if(window.scheduleCloudSync)window.scheduleCloudSync()}
 function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+/* --- Szinkron-segédek: mely bejegyzések várnak feltöltésre / törlésre --- */
+function syncState(){try{const s=JSON.parse(localStorage.getItem(SYNC_KEY)||'{}');return{hid:s.hid||null,dirty:Array.isArray(s.dirty)?s.dirty:[],deleted:Array.isArray(s.deleted)?s.deleted:[]}}catch(e){return{hid:null,dirty:[],deleted:[]}}}
+function saveSyncState(s){localStorage.setItem(SYNC_KEY,JSON.stringify({hid:s.hid,dirty:[...new Set(s.dirty)],deleted:[...new Set(s.deleted)]}))}
+function touch(e){e.upd=new Date().toISOString();const s=syncState();s.dirty.push(String(e.id));saveSyncState(s)}
+function markDeleted(i){i=String(i);const s=syncState();s.dirty=s.dirty.filter(x=>x!==i);s.deleted.push(i);saveSyncState(s)}
+function clearDeleted(ids){const s=syncState();s.deleted=s.deleted.filter(x=>!ids.includes(x));saveSyncState(s)}
+function clearDirtyIf(items){const s=syncState();for(const it of items){const cur=events.find(e=>String(e.id)===String(it.id));if(!cur||cur.upd===it.upd)s.dirty=s.dirty.filter(x=>x!==String(it.id))}saveSyncState(s)}
+function importLegacyDeleted(){try{const old=JSON.parse(localStorage.getItem(LEGACY_DELETED_KEY)||'[]');if(old.length){const s=syncState();s.deleted.push(...old.map(String));saveSyncState(s)}localStorage.removeItem(LEGACY_DELETED_KEY)}catch(e){}}
+function bindHousehold(hid){const s=syncState();if(s.hid&&s.hid!==hid){events=[];s.dirty=[];s.deleted=[];localStorage.setItem(KEY,'[]');render()}if(s.hid!==hid){s.hid=hid;saveSyncState(s)}}
+function getEvents(){return events}
+function replaceEvents(arr){events=arr;localStorage.setItem(KEY,JSON.stringify(events));render()}
+function getActiveTab(){return activeTab}
+/* --- Megjelenítés --- */
 function todayKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function fmtTime(v){return new Date(v).toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'})}
 function fmtDate(v){return new Date(v).toLocaleDateString('hu-HU',{year:'numeric',month:'short',day:'numeric'})}
+function fmtStamp(v){const d=new Date(v),o={month:'short',day:'numeric'};if(d.getFullYear()!==new Date().getFullYear())o.year='numeric';return d.toLocaleDateString('hu-HU',o)+' · '+fmtTime(v)}
 function typeInfo(t){return {pee:['💧','Pisi'],poop:['💩','Kaki'],water:['🥣','Víz'],appetite:['🍽️','Étvágy'],weight:['⚖️','Testsúly']}[t]}
-function quick(t){const e={id:id(),type:t,at:new Date().toISOString()};events.push(e);persist();toast(t==='pee'?'Pisi rögzítve 💧':'Kaki rögzítve 💩')}
+function quick(t){const e={id:id(),type:t,at:new Date().toISOString()};touch(e);events.push(e);persist();toast(t==='pee'?'Pisi rögzítve 💧':'Kaki rögzítve 💩')}
 function openModal(type,record=null){currentType=type;editingId=record?.id||null;const titles={water:'Vízfogyasztás',appetite:'Étvágy rögzítése',weight:'Testsúly rögzítése',pee:'Pisi szerkesztése',poop:'Kaki szerkesztése'};document.getElementById('modalTitle').textContent=titles[type]||'Esemény szerkesztése';document.getElementById('modalDesc').textContent=record?'Módosítsd a rögzített adatot.':'Rögzítsd Pamacs mai adatát.';
 let fields='';const val=record||{};
 if(type==='water')fields=`<div class="field"><label>Mennyiség (ml)</label><input id="fAmount" type="number" min="1" max="2000" step="1" placeholder="pl. 25" inputmode="decimal" value="${val.amount??''}"></div>`;
@@ -74,10 +89,14 @@ function saveModal(){let item=editingId?events.find(x=>x.id===editingId):{id:id(
 if(currentType==='water'||currentType==='weight'){const n=Number(document.getElementById('fAmount').value);if(!n||n<=0){toast('Adj meg érvényes mennyiséget');return}item.amount=n}
 if(currentType==='appetite'){item.value=document.getElementById('fValue').value;item.note=document.getElementById('fNote').value.trim()}
 if(currentType==='pee'||currentType==='poop'){const d=document.getElementById('fAt').value;if(!d){toast('Add meg az időpontot');return}item.at=new Date(d).toISOString();item.note=document.getElementById('fNote').value.trim()}
-if(!editingId)events.push(item);persist();closeModal();toast('Mentve ✓')}
-function setTab(tab){activeTab=tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['today','all','tools'].forEach(x=>document.getElementById(x+'View').style.display=x===tab?'block':'none')}
-function timeSince(iso){if(!iso)return 'Még nincs rögzítve';let m=Math.max(0,Math.floor((Date.now()-new Date(iso).getTime())/60000));if(m<60)return `${m} perce`;let h=Math.floor(m/60),r=m%60;return r?`${h} óra ${r} perce`:`${h} órája`}
-function render(){const today=todayKey();const todays=events.filter(e=>todayKey(new Date(e.at))===today);const pee=todays.filter(e=>e.type==='pee').sort((a,b)=>new Date(b.at)-new Date(a.at));const poop=todays.filter(e=>e.type==='poop').sort((a,b)=>new Date(b.at)-new Date(a.at));document.getElementById('peeCount').textContent=pee.length;document.getElementById('poopCount').textContent=poop.length;document.getElementById('peeLast').textContent=pee[0]?'Utolsó: '+fmtTime(pee[0].at)+' · '+timeSince(pee[0].at):'Még nincs rögzítve';document.getElementById('poopLast').textContent=poop[0]?'Utolsó: '+fmtTime(poop[0].at)+' · '+timeSince(poop[0].at):'Még nincs rögzítve';
+touch(item);if(!editingId)events.push(item);persist();closeModal();toast('Mentve ✓')}
+function setTab(tab){activeTab=tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['today','all','tools'].forEach(x=>document.getElementById(x+'View').style.display=x===tab?'block':'none');if(tab==='tools'&&window.pamacsOnTools)window.pamacsOnTools()}
+/* Eltelt idő: "épp most", "12 perce", "3 órája", "2 napja" */
+function timeSince(iso){const m=Math.max(0,Math.floor((Date.now()-new Date(iso).getTime())/60000));if(m<1)return 'épp most';if(m<60)return m+' perce';const h=Math.floor(m/60);if(h<24)return h+' órája';return Math.floor(h/24)+' napja'}
+/* A teljes naplóból a legutóbbi pisi / kaki, nem csak a maiak közül */
+function lastOf(t){let best=null;for(const e of events){if(e.type!==t)continue;if(!best||new Date(e.at)>new Date(best.at))best=e}return best}
+function showLast(t){const e=lastOf(t);document.getElementById(t+'Last').textContent=e?'Utoljára: '+timeSince(e.at):'Még nincs rögzítve';document.getElementById(t+'LastDate').textContent=e?fmtStamp(e.at):''}
+function render(){const today=todayKey();const todays=events.filter(e=>todayKey(new Date(e.at))===today);const pee=todays.filter(e=>e.type==='pee');const poop=todays.filter(e=>e.type==='poop');document.getElementById('peeCount').textContent=pee.length;document.getElementById('poopCount').textContent=poop.length;showLast('pee');showLast('poop');
 const water=todays.filter(e=>e.type==='water').reduce((s,e)=>s+(Number(e.amount)||0),0);document.getElementById('waterTotal').innerHTML=water+'<span style="font-size:15px"> ml</span>';
 const appet=todays.filter(e=>e.type==='appetite').sort((a,b)=>new Date(b.at)-new Date(a.at))[0];document.getElementById('appetiteToday').textContent=appet?appet.value:'Nincs adat';
 const weights=events.filter(e=>e.type==='weight').sort((a,b)=>new Date(b.at)-new Date(a.at));document.getElementById('weightValue').innerHTML=weights[0]?Number(weights[0].amount).toFixed(2).replace('.',',')+' <small>kg</small>':'— <small>kg</small>';document.getElementById('weightDate').textContent=weights[0]?fmtDate(weights[0].at):'Még nincs rögzítve';
@@ -87,39 +106,127 @@ document.getElementById('today').textContent=new Date().toLocaleDateString('hu-H
 function renderList(list){if(!list.length)return '<div class="empty">Még nincs rögzített esemény.<br>Az első bejegyzésed itt fog megjelenni.</div>';return list.map(e=>{const [ico,name]=typeInfo(e.type);let value=e.type==='water'?e.amount+' ml':e.type==='weight'?Number(e.amount).toFixed(2)+' kg':e.type==='appetite'?e.value:'';return `<div class="entry"><div class="entryico">${ico}</div><div class="entrymain"><strong>${name}${value?' · '+escapeHtml(value):''}</strong><small>${fmtDate(e.at)} · ${fmtTime(e.at)}${e.note?' · '+escapeHtml(e.note):''}</small></div><div class="entryactions"><button onclick="editEvent('${e.id}')">✎</button><button onclick="deleteEvent('${e.id}')">×</button></div></div>`}).join('')}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function editEvent(id){const e=events.find(x=>x.id===id);if(e)openModal(e.type,e)}
-function deleteEvent(id){if(confirm('Biztosan törlöd ezt a bejegyzést?')){events=events.filter(e=>e.id!==id);if(window.noteCloudDelete)window.noteCloudDelete(id);persist();toast('Bejegyzés törölve')}}
-function exportData(){const blob=new Blob([JSON.stringify({app:'Pamacs',version:1,exportedAt:new Date().toISOString(),events},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pamacs-mentes-'+todayKey()+'.json';a.click();URL.revokeObjectURL(a.href);toast('Mentés letöltése elindult')}
-function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!Array.isArray(data.events))throw Error();if(confirm('A jelenlegi napló lecserélődik a mentés tartalmára. Folytatod?')){events=data.events;persist();toast('Mentés visszatöltve')}}catch(e){toast('Nem sikerült beolvasni a mentést')}ev.target.value=''};r.readAsText(f)}
-function confirmClear(){if(confirm('Biztosan törlöd az összes Pamacs-bejegyzést? Előtte készíts mentést!')){events=[];persist();toast('Napló kiürítve')}}
+function deleteEvent(id){if(confirm('Biztosan törlöd ezt a bejegyzést? A közös naplóból is törlődik.')){events=events.filter(e=>e.id!==id);markDeleted(id);persist();toast('Bejegyzés törölve')}}
+function exportData(){const blob=new Blob([JSON.stringify({app:'Pamacs',version:2,exportedAt:new Date().toISOString(),events},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pamacs-mentes-'+todayKey()+'.json';a.click();URL.revokeObjectURL(a.href);toast('Mentés letöltése elindult')}
+function importData(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!Array.isArray(data.events))throw Error();if(confirm('A mentésben lévő bejegyzések hozzáadódnak a naplóhoz, a már meglévők megmaradnak. Folytatod?')){const map=new Map(events.map(e=>[String(e.id),e]));let n=0;for(const e of data.events){if(!e||!e.id||!e.at||!typeInfo(e.type))continue;const k=String(e.id);if(map.has(k))continue;const c={...e,id:k};touch(c);map.set(k,c);n++}events=[...map.values()];persist();toast(n+' bejegyzés visszatöltve')}}catch(e){toast('Nem sikerült beolvasni a mentést')}ev.target.value=''};r.readAsText(f)}
+function confirmClear(){if(confirm('Törlöd a bejegyzéseket ezen az eszközön? A közös felhős napló nem törlődik: bejelentkezve a következő szinkronnál visszatöltődik. Kijelentkezve viszont végleg elvész, ezért előtte készíts mentést!')){events=[];const s=syncState();s.dirty=[];s.deleted=[];saveSyncState(s);persist();toast('Helyi napló kiürítve')}}
 let toastTimer;function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1900)}
 render();
-if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+/* Az "eltelt idő" percenként frissül */
+function tick(){render();setTimeout(tick,60000-(Date.now()%60000)+50)}
+setTimeout(tick,60000-(Date.now()%60000)+50);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')render()});
+/* Szolgáltatásfigyelő: új verzió esetén egyszer újratölt */
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){const hadController=!!navigator.serviceWorker.controller;let reloaded=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadController&&!reloaded){reloaded=true;location.reload()}});window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(r=>r.update()).catch(()=>{}))}
 </script>
-
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const SUPABASE_URL='https://ibviwtatvgvunzqrzgof.supabase.co';
 const SUPABASE_KEY='sb_publishable_gIj6SdAk3EQAsh7yDd1A3g_-kyACsox';
 const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
-const DELETED_KEY='pamacs_cloud_deleted_v1';let syncBusy=false,syncTimer=null;
+const W=window;
+let syncBusy=false,syncAgain=false,syncTimer=null,lastHid=null,lastUser=null;
 function status(t){const el=document.getElementById('cloudStatus');if(el)el.textContent=t}
-function deleted(){try{return JSON.parse(localStorage.getItem(DELETED_KEY)||'[]')}catch{return []}}
-function saveDeleted(a){localStorage.setItem(DELETED_KEY,JSON.stringify([...new Set(a)]))}
-window.noteCloudDelete=id=>saveDeleted([...deleted(),id]);
-window.scheduleCloudSync=()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>{if(navigator.onLine)window.pamacsSync()},1200)};
-// Offline módban a helyi mentés megmarad; kapcsolat-visszatéréskor automatikusan újrapróbáljuk.
-window.addEventListener('online',()=>{status('Internetkapcsolat helyreállt. Szinkronizálás…');window.pamacsSync()});
-// Az alkalmazás újbóli előtérbe kerülésekor frissítsük a felhőből az adatokat.
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine&&window.pamacsSync){clearTimeout(syncTimer);syncTimer=setTimeout(()=>window.pamacsSync(),500)}});
-function localEvents(){try{return JSON.parse(localStorage.getItem('pamacs_app_v1')||'[]')}catch{return []}}
-function saveLocal(a){localStorage.setItem('pamacs_app_v1',JSON.stringify(a));if(typeof window.render==='function')window.render()}
-function toRow(e,userId){return {user_id:userId,client_id:String(e.id),type:e.type,occurred_at:e.at||new Date().toISOString(),amount:e.amount??null,appetite:e.value??null,note:e.note??null}}
-function fromRow(r){return {id:r.client_id,type:r.type,at:r.occurred_at,amount:r.amount??undefined,value:r.appetite??undefined,note:r.note??undefined}}
-async function sync(){if(syncBusy)return;syncBusy=true;try{const {data:{user},error:ue}=await supabase.auth.getUser();if(ue)throw ue;if(!user){status('Nincs bejelentkezve. A napló ezen az eszközön tárolódik.');return}status('Felhőszinkron folyamatban…');const gone=deleted();if(gone.length){const {error}=await supabase.from('events').delete().eq('user_id',user.id).in('client_id',gone);if(error)throw error;saveDeleted([])}const {data:remote,error:re}=await supabase.from('events').select('client_id,type,occurred_at,amount,appetite,note').eq('user_id',user.id);if(re)throw re;const local=localEvents();const map=new Map(local.map(e=>[String(e.id),e]));for(const r of(remote||[])){if(!map.has(String(r.client_id)))map.set(String(r.client_id),fromRow(r))}const merged=[...map.values()].sort((a,b)=>new Date(a.at)-new Date(b.at));saveLocal(merged);if(merged.length){const rows=merged.map(e=>toRow(e,user.id));const {error}=await supabase.from('events').upsert(rows,{onConflict:'user_id,client_id'});if(error)throw error}status(`Szinkronizálva ✓ ${merged.length} bejegyzés a felhőben.`)}catch(e){console.error(e);status('A szinkronizálás nem sikerült: '+(e.message||'ismeretlen hiba')+'. Ellenőrizd a beállításokat és az internetkapcsolatot.')}finally{syncBusy=false}}
-window.pamacsSync=sync;
-window.pamacsSignIn=async()=>{const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;if(!email||!password){status('Add meg az e-mail-címedet és a jelszavadat.');return}status('Bejelentkezés…');const {error}=await supabase.auth.signInWithPassword({email,password});if(error){status('Bejelentkezési hiba: '+error.message);return}await sync()};
-window.pamacsSignUp=async()=>{const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;if(!email||password.length<6){status('Adj meg e-mail-címet és legalább 6 karakteres jelszót.');return}status('Fiók létrehozása…');const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});if(error){status('Regisztrációs hiba: '+error.message);return}if(data.session){await sync()}else{status('Elküldtük a megerősítő e-mailt. Nyisd meg, erősítsd meg a címedet, majd jelentkezz be az alkalmazásban.')}};
-window.pamacsSignOut=async()=>{const {error}=await supabase.auth.signOut();status(error?'Kijelentkezési hiba: '+error.message:'Kijelentkeztél. A helyi napló megmaradt.')};
-supabase.auth.onAuthStateChange((event,session)=>{if(session&&event==='SIGNED_IN')setTimeout(sync,0);else if(!session)status('Nincs bejelentkezve. A napló ezen az eszközön tárolódik.')});const {data:{session}}=await supabase.auth.getSession();if(session)await sync();
+function clock(){return new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'})}
+function fromRow(r){const e={id:String(r.client_id),type:r.type,at:r.occurred_at,upd:r.updated_at,cb:r.user_id};if(r.amount!=null)e.amount=Number(r.amount);if(r.appetite!=null)e.value=r.appetite;if(r.note)e.note=r.note;return e}
+function toRow(e,uid,hid){return {household_id:hid,user_id:uid,client_id:String(e.id),type:e.type,occurred_at:e.at,amount:e.amount!=null?Number(e.amount):null,appetite:e.value??null,note:e.note?e.note:null,updated_at:e.upd||new Date().toISOString()}}
+W.scheduleCloudSync=()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>{if(navigator.onLine)sync()},1200)};
+window.addEventListener('online',()=>{status('Internetkapcsolat helyreállt. Szinkronizálás…');sync()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine){clearTimeout(syncTimer);syncTimer=setTimeout(sync,500)}});
+/* Nyitott alkalmazásnál percenként átnézzük, mi változott a másik eszközön */
+setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine&&lastUser)sync()},60000);
+
+async function fetchAll(table,cols,hid){const out=[];for(let from=0;;from+=1000){const {data,error}=await supabase.from(table).select(cols).eq('household_id',hid).order('client_id',{ascending:true}).range(from,from+999);if(error)throw error;out.push(...data);if(data.length<1000)break}return out}
+async function findHousehold(uid){const q=()=>supabase.from('household_members').select('household_id,role').eq('user_id',uid).limit(1);let {data,error}=await q();if(error)throw error;if(!data.length){await supabase.rpc('accept_household_invites');({data,error}=await q());if(error)throw error}return data[0]||null}
+
+/* Összefésülés: a törlés nyer; a frissebb módosítás nyer (updated_at); ami csak itt van, feltöltődik */
+function reconcile(remote,tombs){
+  const tomb=new Set(tombs.map(t=>String(t.client_id)));
+  const st=W.syncState();const dirty=new Set(st.dirty);
+  const map=new Map(W.getEvents().map(e=>[String(e.id),e]));
+  const rem=new Map(remote.map(r=>[String(r.client_id),r]));
+  let changed=false;const upload=[];
+  for(const id of [...map.keys()]){if(tomb.has(id)){map.delete(id);dirty.delete(id);changed=true}}
+  for(const [id,r] of rem){
+    const l=map.get(id);
+    if(!l){map.set(id,fromRow(r));changed=true;continue}
+    const rt=Date.parse(r.updated_at)||0,lt=l.upd?Date.parse(l.upd):0;
+    if(rt>lt){map.set(id,fromRow(r));dirty.delete(id);changed=true}
+    else if(lt>rt&&dirty.has(id))upload.push({...l});
+  }
+  for(const [id,l] of map){if(!rem.has(id)){if(!l.upd){l.upd=new Date().toISOString();changed=true}upload.push({...l})}}
+  if(changed)W.replaceEvents([...map.values()].sort((a,b)=>new Date(a.at)-new Date(b.at)));
+  st.dirty=[...dirty];W.saveSyncState(st);
+  return upload;
+}
+async function uploadItems(items,uid,hid){
+  let failed=0;
+  for(let i=0;i<items.length;i+=200){
+    const chunk=items.slice(i,i+200);
+    const {error}=await supabase.from('events').upsert(chunk.map(e=>toRow(e,uid,hid)),{onConflict:'household_id,client_id'});
+    if(!error){W.clearDirtyIf(chunk);continue}
+    if(!error.code)throw error;
+    for(const e of chunk){const r=await supabase.from('events').upsert(toRow(e,uid,hid),{onConflict:'household_id,client_id'});if(r.error){if(!r.error.code)throw r.error;failed++;console.error(r.error)}else W.clearDirtyIf([e])}
+  }
+  return failed;
+}
+async function sync(){
+  if(syncBusy){syncAgain=true;return}
+  syncBusy=true;
+  try{
+    const {data:{session},error:se}=await supabase.auth.getSession();if(se)throw se;
+    const user=session?.user||null;lastUser=user;
+    if(!user){lastHid=null;status('Nincs bejelentkezve. A napló ezen az eszközön tárolódik.');return}
+    status('Felhőszinkron folyamatban…');
+    const h=await findHousehold(user.id);lastHid=h;
+    if(!h){await loadHousehold(null,user);status('Bejelentkezve: '+user.email+'. Ehhez a fiókhoz még nem tartozik közös háztartás, ezért a szinkron szünetel. A napló ezen az eszközön tárolódik.');return}
+    const hid=h.household_id;
+    W.bindHousehold(hid);W.importLegacyDeleted();
+    const del=W.syncState().deleted;
+    for(let i=0;i<del.length;i+=100){const ch=del.slice(i,i+100);const {error}=await supabase.from('events').delete().eq('household_id',hid).in('client_id',ch);if(error)throw error;W.clearDeleted(ch)}
+    const [remote,tombs]=await Promise.all([fetchAll('events','client_id,type,occurred_at,amount,appetite,note,updated_at,user_id',hid),fetchAll('event_deletions','client_id',hid)]);
+    const upload=reconcile(remote,tombs);
+    let failed=0;if(upload.length)failed=await uploadItems(upload,user.id,hid);
+    status('Szinkronizálva ✓ '+W.getEvents().length+' bejegyzés · '+clock()+' · '+user.email+(failed?' · '+failed+' bejegyzést nem sikerült feltölteni':''));
+    if(W.getActiveTab()==='tools')await loadHousehold(h,user);
+  }catch(e){console.error(e);status('A szinkronizálás nem sikerült: '+(e.message||'ismeretlen hiba')+'. A bejegyzések az eszközön megmaradtak, később újrapróbáljuk.')}
+  finally{syncBusy=false;if(syncAgain){syncAgain=false;setTimeout(sync,300)}}
+}
+W.pamacsSync=sync;
+
+async function loadHousehold(h,user){
+  const info=document.getElementById('householdInfo'),box=document.getElementById('inviteBox');if(!info||!box)return;
+  if(!user){info.textContent='Jelentkezz be a közös háztartás megtekintéséhez.';box.style.display='none';return}
+  if(!h){info.textContent='Ehhez a fiókhoz még nem tartozik közös háztartás. Ha a párod meghívott, jelentkezz be a meghívott e-mail-címmel (előbb erősítsd meg az e-mailt), majd nyomd meg a Szinkronizálás gombot.';box.style.display='none';return}
+  try{
+    const [hh,mem]=await Promise.all([supabase.from('households').select('name').eq('id',h.household_id).maybeSingle(),supabase.from('household_members').select('user_id').eq('household_id',h.household_id)]);
+    const n=(mem.data||[]).length;
+    info.textContent=(hh.data?.name||'Közös háztartás')+' · '+n+' tag · '+(h.role==='owner'?'te vagy a tulajdonos':'tag vagy');
+    if(h.role!=='owner'){box.style.display='none';return}
+    box.style.display='block';
+    const {data:inv}=await supabase.from('household_invites').select('id,email,accepted_at').eq('household_id',h.household_id).order('created_at');
+    document.getElementById('inviteList').innerHTML=(inv||[]).map(i=>`<div class="entry"><div class="entrymain"><strong>${W.escapeHtml(i.email)}</strong><small>${i.accepted_at?'Csatlakozott':'Meghívva, még nem csatlakozott'}</small></div>${i.accepted_at?'':`<div class="entryactions"><button onclick="window.pamacsRemoveInvite('${i.id}')">×</button></div>`}</div>`).join('');
+  }catch(e){console.error(e);info.textContent='A háztartás adatait most nem sikerült betölteni.'}
+}
+W.pamacsOnTools=()=>{if(lastUser)loadHousehold(lastHid,lastUser)};
+W.pamacsInvite=async()=>{
+  const el=document.getElementById('inviteEmail');const email=el.value.trim().toLowerCase();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){W.toast('Adj meg érvényes e-mail-címet');return}
+  if(!lastHid||lastHid.role!=='owner'||!lastUser){W.toast('Csak a tulajdonos hívhat meg');return}
+  const {error}=await supabase.from('household_invites').insert({household_id:lastHid.household_id,email,invited_by:lastUser.id});
+  if(error){W.toast(error.code==='23505'?'Ezt a címet már meghívtad':'Meghívási hiba: '+error.message);return}
+  el.value='';W.toast('Meghívó rögzítve ✓');status('Meghívó rögzítve: '+email+'. A meghívott regisztráljon ezzel a címmel, erősítse meg az e-mailt, majd jelentkezzen be.');
+  await loadHousehold(lastHid,lastUser);
+};
+W.pamacsRemoveInvite=async(id)=>{const {error}=await supabase.from('household_invites').delete().eq('id',id);if(error){W.toast('Nem sikerült törölni: '+error.message);return}await loadHousehold(lastHid,lastUser)};
+
+W.pamacsSignIn=async()=>{const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;if(!email||!password){status('Add meg az e-mail-címedet és a jelszavadat.');return}status('Bejelentkezés…');const {error}=await supabase.auth.signInWithPassword({email,password});if(error){status('Bejelentkezési hiba: '+error.message);return}await sync()};
+W.pamacsSignUp=async()=>{const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;if(!email||password.length<6){status('Adj meg e-mail-címet és legalább 6 karakteres jelszót.');return}status('Fiók létrehozása…');const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});if(error){status('Regisztrációs hiba: '+error.message);return}if(data.session){await sync()}else{status('Elküldtük a megerősítő e-mailt. Nyisd meg, erősítsd meg a címedet, majd jelentkezz be az alkalmazásban.')}};
+W.pamacsSignOut=async()=>{const {error}=await supabase.auth.signOut();lastUser=null;lastHid=null;loadHousehold(null,null);status(error?'Kijelentkezési hiba: '+error.message:'Kijelentkeztél. A helyi napló megmaradt.')};
+
+supabase.auth.onAuthStateChange((event,session)=>{if(session&&event==='SIGNED_IN')setTimeout(sync,0);else if(!session){lastUser=null;status('Nincs bejelentkezve. A napló ezen az eszközön tárolódik.')}});
+const {data:{session:startSession}}=await supabase.auth.getSession();
+if(startSession){lastUser=startSession.user;await sync()}
 </script>
-</body></html>
+</body>
+</html>
